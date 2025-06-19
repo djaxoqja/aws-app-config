@@ -13,20 +13,22 @@ spec:
         app: k8s-api-gateway
     spec:
       containers:
-      - name: k8s-api-gateway
-        image: eomtaebeom/k8s-api-gateway:0.0.6
-        imagePullPolicy: Always
-        env:
-        - name: SPRING_PROFILES_ACTIVE
-          value: prd
-        ports:
-        - containerPort: 8080
-
-        volumeMounts:
-          - name: api-gateway-config-volume
-            mountPath: /etc/config
-          - name: api-gateway-secret-volume
-            mountPath: /etc/secret
+        - name: k8s-api-gateway
+          image: eomtaebeom/k8s-api-gateway:0.0.6
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: prd
+          ports:
+            - containerPort: 8080
+          args:
+            - "--spring.config.import=optional:file:/etc/config/application-dev.yml"
+          volumeMounts:
+            - name: api-gateway-config-volume
+              mountPath: /etc/config/application-dev.yml
+              subPath: application-dev.yml
+            - name: api-gateway-secret-volume
+              mountPath: /etc/secret
 
       volumes:
         - name: api-gateway-config-volume
